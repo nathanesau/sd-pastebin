@@ -1,0 +1,5 @@
+# pastebin-backend
+__pycache__
+*.pyc
+logs
+pastes
