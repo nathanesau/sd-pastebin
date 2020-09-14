@@ -68,7 +68,8 @@ export default {
       })
       .then(response => {
         this.shortlink = response.data.shortlink;
-        this.url_link = "http://localhost:8080/sd-pastebin?shortlink=" + this.shortlink;
+        let uri = window.location;
+        this.url_link = uri.origin + "/sd-pastebin?shortlink=" + this.shortlink;
       })
       .catch(error => console.log(error))
     },
