@@ -40,4 +40,4 @@ The api is publicly accessible, so anyone who knows what the url is could access
 
 ## Design
 
-![](basic_design.png)
+![](design.png)
