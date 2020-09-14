@@ -1,4 +1,5 @@
 {
+  "homepage": "https://nathanesau.github.io/sd-pastebin/",
   "name": "pastebin-frontend",
   "version": "0.1.0",
   "private": true,
