@@ -1,6 +1,6 @@
 {
   "homepage": "https://nathanesau.github.io/sd-pastebin/",
-  "name": "pastebin-frontend",
+  "name": "sd-pastebin",
   "version": "0.1.0",
   "private": true,
   "scripts": {

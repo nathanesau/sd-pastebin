@@ -1,4 +1,4 @@
-# pastebin-frontend
+# sd-pastebin
 
 Running Frontend:
 
