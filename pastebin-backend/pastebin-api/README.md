@@ -45,5 +45,5 @@ Docker Instructions:
 
 ```bash
 docker build -t pastebin-api:latest .
-docker run --name pastebin-api --restart always -d -p 5000:5000 --rm pastebin-api:latest
+docker run --name pastebin-api --restart always -d -p 5000:5000 pastebin-api:latest
 ```
