@@ -78,6 +78,13 @@ def get_paste():
     if paste is None:  # bad request
         abort(400)
 
+    # update redis cache with hit
+    r = redis.Redis(host=app.config['REDIS_HOST'], port=app.config['REDIS_PORT'])
+    period = datetime.now().strftime("%Y-%m")
+    key = "{}-{}".format(period, shortlink)
+    r.incrby(key, 1)
+    r.close()
+
     # load paste_contents from file
     f = open(paste.paste_path, 'r')
     paste_contents = f.read()

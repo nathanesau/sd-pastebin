@@ -1,4 +1,6 @@
-create table pastes
+create schema pastebin;
+
+create table pastebin.pastes
 (
 shortlink char(7) not null,
 expiration_length_in_minutes int not null,
