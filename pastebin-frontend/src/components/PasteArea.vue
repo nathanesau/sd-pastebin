@@ -61,17 +61,21 @@ export default {
   methods: {
     async write_paste() {
       let body = { "expiration_length_in_minutes": "43200", "paste_contents": this.content };
-      axios.post("http://127.0.0.1:5000/api/v1/paste", JSON.stringify(body), {
+      //axios.post("http://api.pastebin.io:5000/api/v1/paste", JSON.stringify(body), {
+      //  headers: { "Content-Type": "application/json"}
+      //})
+      axios.post("https://api.pastebin.io/pastebin-api/api/v1/paste", JSON.stringify(body), {
         headers: { "Content-Type": "application/json"}
       })
       .then(response => {
         this.shortlink = response.data.shortlink;
-        this.url_link = "http://localhost:8080?shortlink=" + this.shortlink;
+        let uri = window.location;
+        this.url_link = uri.origin + "/sd-pastebin?shortlink=" + this.shortlink;
       })
       .catch(error => console.log(error))
     },
     async read_paste(shortlink) {
-      axios.get("http://127.0.0.1:5000/api/v1/paste?shortlink=" + shortlink, {
+      axios.get("https://api.pastebin.io/pastebin-api/api/v1/paste?shortlink=" + shortlink, {
         headers: { "Content-Type": "application/json"}
       })
       .then(response => {

@@ -12,13 +12,13 @@ API tests:
 
 ```bash
 # /api/v1/paste?shortlink=foobar
-curl http://localhost:5000/api/v1/paste?shortlink=uaCyzSj
+curl http://api.pastebin.io:5000/api/v1/paste?shortlink=3kyFdv2
 
 # /api/v1/paste
-curl -H "Content-Type: application/json" -XPOST --data '{"expiration_length_in_minutes": "43200", "paste_contents": "Hello World!"}' http://localhost:5000/api/v1/paste
+curl -H "Content-Type: application/json" -XPOST --data '{"expiration_length_in_minutes": "43200", "paste_contents": "Hello World!"}' http://api.pastebin.io:5000/api/v1/paste
 
 # /api/v1/stats
-curl -H "Content-Type: application/json" "http://localhost:5000/api/v1/stats/hits?period=2020-09&shortlink=uaCyzSj"
+curl -H "Content-Type: application/json" "http://api.pastebin.io:5000/api/v1/stats/hits?period=2020-09&shortlink=uaCyzSj"
 ```
 
 API https tests (letsencrypt used for certificate and key):
