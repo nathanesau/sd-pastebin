@@ -8,8 +8,9 @@ import os
 app = Flask(__name__)
 CORS(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:postgres@134.122.41.28/postgres'
-app.config['PASTES_FOLDER'] = 'pastes'
-app.config['LOGS_FOLDER'] = 'logs'
+app.config['PASTES_FOLDER'] = '/pastes'
+app.config['CACHE_FOLDER'] = '/cache'
+app.config['LOGS_FOLDER'] = '/logs'
 app.config['REDIS_HOST'] = '134.122.41.28'
 app.config['REDIS_PORT'] = 6379
 db = SQLAlchemy(app)

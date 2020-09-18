@@ -10,12 +10,13 @@ RUN venv/bin/pip install -r requirements.txt
 RUN venv/bin/pip install gunicorn
 
 COPY app app
-#COPY migrations migrations
 COPY pastebin-api.py ./
 COPY boot.sh ./
-# COPY config.py ./
 
 RUN chmod +x boot.sh
+#RUN mkdir -p /pastes
+#RUN mkdir -p /cache
+#RUN mkdir -p /logs
 
 ENV FLASK_APP pastebin-api.py
 

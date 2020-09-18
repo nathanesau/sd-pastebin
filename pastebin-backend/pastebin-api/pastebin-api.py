@@ -10,6 +10,7 @@ def expire_task():
     """
     checks whether any pastes have expired and deletes expired pastes
     """
+    print("running expiry task at {}".format(datetime.now()))
     result = Pastes.query.filter(Pastes.created_at \
         + func.make_interval(0,0,0,0,0,Pastes.expiration_length_in_minutes) < datetime.now())
 
@@ -28,4 +29,4 @@ sched.add_job(expire_task, 'interval', seconds=60)
 sched.start()
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=6379)
+    app.run(host='0.0.0.0', port=5000)

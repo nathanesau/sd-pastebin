@@ -9,6 +9,7 @@ from hashlib import md5
 import os
 import redis
 import json
+import shutil
 
 BASE62 = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
@@ -47,26 +48,32 @@ def write_paste():
     ip_addr = request.remote_addr
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     key = str(ip_addr + timestamp).encode('utf-8')
-    url = generate_url(ip_addr, timestamp)
+    shortlink = generate_url(ip_addr, timestamp)
 
-    # create file on server
-    # alternative to use Amazon S3, etc. for file-store
-    paste_path = "{}/{}.txt".format(app.config['PASTES_FOLDER'], url)
+    # write to pastes folder
+    # provide cache folder in DB
+    # will be uploaded to S3 later by linux service
+    paste_path = "{}/{}.txt".format(app.config['PASTES_FOLDER'], shortlink)
     os.makedirs(os.path.dirname(paste_path), exist_ok=True)
     f = open(paste_path, 'w')
     f.write(request.json["paste_contents"])
     f.close()
 
+    # copy file to cache folder
+    cache_path = "{}/{}.txt".format(app.config['CACHE_FOLDER'], shortlink)
+    shutil.copyfile(paste_path, cache_path)
+
     # add paste to database
-    paste = Pastes(shortlink=url,
+    path = "{}.txt".format(shortlink)
+    paste = Pastes(shortlink=shortlink,
                    expiration_length_in_minutes=request.json['expiration_length_in_minutes'],
                    created_at=datetime.now(),
-                   paste_path=paste_path)
+                   paste_path=path)
 
     db.session.add(paste)
     db.session.commit()
 
-    return jsonify({"shortlink": url }), 200
+    return jsonify({"shortlink": shortlink }), 200
 
 
 @app.route('/api/v1/paste', methods=['GET'])
@@ -86,7 +93,9 @@ def get_paste():
     r.close()
 
     # load paste_contents from file
-    f = open(paste.paste_path, 'r')
+    path = paste.paste_path
+    cache_path = "{}/{}.txt".format(app.config['CACHE_FOLDER'], shortlink)
+    f = open(cache_path, 'r')
     paste_contents = f.read()
     f.close()
 

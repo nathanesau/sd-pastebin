@@ -1,0 +1,10 @@
+[Unit]
+Description=service to upload pastes to digital ocean spaces.
+
+[Service]
+Type=simple
+User=root
+ExecStart=/usr/bin/python3.6 /root/sd-pastebin/pastebin-backend/pastebin-api/services/upload_pastes/upload_pastes.py
+
+[Install]
+WantedBy=multi-user.target
