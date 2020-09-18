@@ -18,7 +18,20 @@ curl http://api.pastebin.io:5000/api/v1/paste?shortlink=3kyFdv2
 curl -H "Content-Type: application/json" -XPOST --data '{"expiration_length_in_minutes": "43200", "paste_contents": "Hello World!"}' http://api.pastebin.io:5000/api/v1/paste
 
 # /api/v1/stats
-curl -H "Content-Type: application/json" "http://api.pastebin.io:5000/api/v1/stats/hits?period=2020-09&shortlink=3kyFdv2"
+curl -H "Content-Type: application/json" "http://api.pastebin.io:5000/api/v1/stats/hits?period=2020-09&shortlink=uaCyzSj"
+```
+
+API https tests (letsencrypt used for certificate and key):
+
+```bash
+# /api/v1/paste?shortlink=foobar
+curl https://api.pastebin.io/pastebin-api/api/v1/paste?shortlink=uaCyzSj
+
+# /api/v1/paste
+curl -H "Content-Type: application/json" -XPOST --data '{"expiration_length_in_minutes": "43200", "paste_contents": "Hello World!"}' https://api.pastebin.io/pastebin-api/api/v1/paste
+
+# /api/v1/stats
+curl -H "Content-Type: application/json" "https://api.pastebin.io/pastebin-api/api/v1/stats/hits?period=2020-09&shortlink=uaCyzSj"
 ```
 
 Running API:
