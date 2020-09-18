@@ -4,7 +4,7 @@ server {
     server_name _;
     location / {
         # redirect any requests to the same URL but on https
-        return 301 https://$host$request_uri;
+        return 301 https://localhost$request_uri;
     }
 }
 
@@ -14,8 +14,8 @@ server {
     server_name _;
 
     # location of the self-signed SSL certificate
-    ssl_certificate /root/certs/cert.pem;
-    ssl_certificate_key /root/certs/key.pem;
+    ssl_certificate /etc/letsencrypt/live/api.pastebin.io/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/api.pastebin.io/privkey.pem;
 
     # write access and error logs to /var/log
     access_log /var/log/pastebin-api_access.log;
@@ -23,7 +23,7 @@ server {
 
     location /pastebin-api/api/v1/paste {
         # forward application requests to the gunicorn server
-        proxy_pass http://localhost:5000;
+        proxy_pass http://localhost:5000/api/v1/paste;
         proxy_redirect off;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
