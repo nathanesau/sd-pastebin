@@ -28,7 +28,8 @@
 
       <ul>
         <li>Created at: {{ created_at }}</li><br><br>
-        <li>Expires at: {{ expires_at }}</li>
+        <li>Expires at: {{ expires_at }}</li><br><br>
+        <li>Hits: {{ hits }}</li>
       </ul>
     </div>
 
@@ -55,15 +56,16 @@ export default {
       this.type = "existing";
       this.shortlink = params.get("shortlink");
       this.urllink = uri;
+      this.created_at = "";
+      this.expires_at = "";
+      this.hits = "";
       this.read_paste(this.shortlink);
+      this.stats_hits(this.shortlink);
     }
   },
   methods: {
     async write_paste() {
       let body = { "expiration_length_in_minutes": "43200", "paste_contents": this.content };
-      //axios.post("http://api.pastebin.io:5000/api/v1/paste", JSON.stringify(body), {
-      //  headers: { "Content-Type": "application/json"}
-      //})
       axios.post("https://api.pastebin.io/pastebin-api/api/v1/paste", JSON.stringify(body), {
         headers: { "Content-Type": "application/json"}
       })
@@ -82,6 +84,18 @@ export default {
         this.content = response.data.paste_contents;
         this.created_at = response.data.created_at;
         this.expires_at = response.data.expires_at;
+      })
+      .catch(error => console.log(error))
+    },
+    async stats_hits(shortlink) {
+      var today = new Date();
+      var period = today.getFullYear() + "-" + ((today.getMonth() < 9) ? "0" + (today.getMonth() + 1) : (today.getMonth() + 1));
+      console.log(period);
+      axios.get("https://api.pastebin.io/pastebin-api/api/v1/stats/hits?period=" + period + "&shortlink=" + shortlink, {
+        headers: { "Content-Type": "application/json"}
+      })
+      .then(response => {
+        this.hits = response.data.hits;
       })
       .catch(error => console.log(error))
     }
