@@ -28,7 +28,8 @@
 
       <ul>
         <li>Created at: {{ created_at }}</li><br><br>
-        <li>Expires at: {{ expires_at }}</li>
+        <li>Expires at: {{ expires_at }}</li><br><br>
+        <li>Hits: {{ hits }}</li>
       </ul>
     </div>
 
@@ -55,15 +56,15 @@ export default {
       this.type = "existing";
       this.shortlink = params.get("shortlink");
       this.urllink = uri;
-      this.read_paste(this.shortlink);
+      this.created_at = "";
+      this.expires_at = "";
+      this.hits = "0";
+      this.get_data(this.shortlink);
     }
   },
   methods: {
     async write_paste() {
       let body = { "expiration_length_in_minutes": "43200", "paste_contents": this.content };
-      //axios.post("http://api.pastebin.io:5000/api/v1/paste", JSON.stringify(body), {
-      //  headers: { "Content-Type": "application/json"}
-      //})
       axios.post("https://api.pastebin.io/pastebin-api/api/v1/paste", JSON.stringify(body), {
         headers: { "Content-Type": "application/json"}
       })
@@ -74,16 +75,21 @@ export default {
       })
       .catch(error => console.log(error))
     },
-    async read_paste(shortlink) {
-      axios.get("https://api.pastebin.io/pastebin-api/api/v1/paste?shortlink=" + shortlink, {
+    async get_data(shortlink) {
+      const promise1 = axios.get("https://api.pastebin.io/pastebin-api/api/v1/paste?shortlink=" + shortlink, {
         headers: { "Content-Type": "application/json"}
-      })
-      .then(response => {
-        this.content = response.data.paste_contents;
-        this.created_at = response.data.created_at;
-        this.expires_at = response.data.expires_at;
-      })
-      .catch(error => console.log(error))
+      });
+      var today = new Date();
+      var period = today.getFullYear() + "-" + ((today.getMonth() < 9) ? "0" + (today.getMonth() + 1) : (today.getMonth() + 1));
+      const promise2 = axios.get("https://api.pastebin.io/pastebin-api/api/v1/stats/hits?period=" + period + "&shortlink=" + shortlink, {
+        headers: { "Content-Type": "application/json"}
+      });
+      Promise.all([promise1, promise2]).then((values) => {
+        this.content = values[0].data.paste_contents;
+        this.created_at = values[0].data.created_at;
+        this.expires_at = values[0].data.expires_at;
+        this.hits = values[1].data.hits;
+      });
     }
   }
 }
