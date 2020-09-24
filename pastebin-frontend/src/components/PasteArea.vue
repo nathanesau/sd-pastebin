@@ -84,7 +84,7 @@ export default {
       const promise2 = axios.get("https://api.pastebin.io/pastebin-api/api/v1/stats/hits?period=" + period + "&shortlink=" + shortlink, {
         headers: { "Content-Type": "application/json"}
       });*/
-      Promise.all([promise1, promise2]).then((values) => {
+      Promise.all([promise1]).then((values) => {
         this.content = values[0].data.paste_contents;
         this.created_at = values[0].data.created_at;
         this.expires_at = values[0].data.expires_at;
