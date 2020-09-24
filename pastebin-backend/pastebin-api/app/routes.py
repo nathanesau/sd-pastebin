@@ -1,4 +1,4 @@
-from app import app, db
+from app import app, celery, db
 
 from flask import request, abort, jsonify, Response
 from flask_sqlalchemy import SQLAlchemy
@@ -39,6 +39,11 @@ def generate_url(ip_addr, timestamp, url_length=7):
 @app.route('/api/v1/paste', methods=['POST'])
 @cross_origin()
 def write_paste():
+    return write_paste_async(request)
+
+
+@celery.task
+def write_paste_async(request):
     if not request.json:
         abort(400)  # missing response body
 
@@ -46,7 +51,7 @@ def write_paste():
         abort(400)  # missing one or more required keys
 
     ip_addr = request.remote_addr
-    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S:%f")
     key = str(ip_addr + timestamp).encode('utf-8')
     shortlink = generate_url(ip_addr, timestamp)
 
