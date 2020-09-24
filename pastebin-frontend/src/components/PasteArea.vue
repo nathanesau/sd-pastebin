@@ -29,7 +29,7 @@
       <ul>
         <li>Created at: {{ created_at }}</li><br><br>
         <li>Expires at: {{ expires_at }}</li><br><br>
-        <li>Hits: {{ hits }}</li>
+        <!--<li>Hits: {{ hits }}</li>-->
       </ul>
     </div>
 
@@ -58,7 +58,7 @@ export default {
       this.urllink = uri;
       this.created_at = "";
       this.expires_at = "";
-      this.hits = "0";
+      //this.hits = "0";
       this.get_data(this.shortlink);
     }
   },
@@ -79,16 +79,16 @@ export default {
       const promise1 = axios.get("https://api.pastebin.io/pastebin-api/api/v1/paste?shortlink=" + shortlink, {
         headers: { "Content-Type": "application/json"}
       });
-      var today = new Date();
+      /*var today = new Date();
       var period = today.getFullYear() + "-" + ((today.getMonth() < 9) ? "0" + (today.getMonth() + 1) : (today.getMonth() + 1));
       const promise2 = axios.get("https://api.pastebin.io/pastebin-api/api/v1/stats/hits?period=" + period + "&shortlink=" + shortlink, {
         headers: { "Content-Type": "application/json"}
-      });
+      });*/
       Promise.all([promise1, promise2]).then((values) => {
         this.content = values[0].data.paste_contents;
         this.created_at = values[0].data.created_at;
         this.expires_at = values[0].data.expires_at;
-        this.hits = values[1].data.hits;
+        //this.hits = values[1].data.hits;
       });
     }
   }
