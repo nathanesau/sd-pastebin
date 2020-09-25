@@ -6,6 +6,8 @@ The background scheduler for expiring old content is part of the flask applicati
 
 Based on suggestions in https://github.com/donnemartin/system-design-primer/blob/master/solutions/system_design/pastebin/README.md.
 
+Site should be live at: https://nathanesau.github.io/sd-pastebin/
+
 ## Design
 
 ![](basic_design.png)
