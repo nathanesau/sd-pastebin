@@ -1,3 +1,3 @@
 module.exports = {
-    publicPath: '/sd-pastebin/'
+  publicPath: '/sd-pastebin/'
 }

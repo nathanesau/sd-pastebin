@@ -1,0 +1,21 @@
+version: '2.1'
+
+services:
+    pastebin-api:
+      depends_on:
+          - pastebin-redis
+          - pastebin-postgres
+      image: pastebin-api:latest
+      container_name: pastebin-api
+      restart: always
+      environment:
+        - POSTGRES_PASS=${POSTGRES_PASS}
+        - SQLALCHEMY_DATABASE_URI=${SQLALCHEMY_DATABASE_URI}
+        - REDIS_HOST=${REDIS_HOST}
+        - REDIS_PASS=${REDIS_PASS}
+        - CELERY_BROKER_URL=${CELERY_BROKER_URL}
+        - CELERY_RESULT_BACKEND=${CELERY_RESULT_BACKEND}
+      volumes:
+        - /root/cache:/cache
+      ports:
+        - 5000:5000
