@@ -28,7 +28,7 @@ Redis data is backed up by a service so data which fits inside the cache should 
 
 ## services
 
-backup_redis, upload_pastes service should be running on master server.
+backup_redis should be running on master server.
 
 # slave servers
 
@@ -54,4 +54,4 @@ api docker container should be running on slave server (use master redis and pos
 
 ## services
 
-upload_pastes service should be running on master server.
+no services needed.
