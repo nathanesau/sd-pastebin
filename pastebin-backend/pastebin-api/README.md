@@ -45,5 +45,5 @@ Docker Instructions:
 
 ```bash
 docker build -t pastebin-api:latest .
-docker run --name pastebin-api --restart always -d -p 5000:5000 -v /root/pastes:/pastes -v /root/cache:/cache pastebin-api:latest
+docker run --name pastebin-api --restart always -d -p 5000:5000 -v /root/cache:/cache pastebin-api:latest
 ```

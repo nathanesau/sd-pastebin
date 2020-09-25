@@ -10,6 +10,7 @@ import os
 import redis
 import json
 import shutil
+import boto3
 
 BASE62 = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
@@ -55,21 +56,21 @@ def write_paste_async(request):
     key = str(ip_addr + timestamp).encode('utf-8')
     shortlink = generate_url(ip_addr, timestamp)
 
-    # write to pastes folder
-    # provide cache folder in DB
-    # will be uploaded to S3 later by linux service
-    paste_path = "{}/{}.txt".format(app.config['PASTES_FOLDER'], shortlink)
+    # write to cache folder
+    paste_path = "{}/{}.txt".format(app.config['CACHE_FOLDER'], shortlink)
     os.makedirs(os.path.dirname(paste_path), exist_ok=True)
     f = open(paste_path, 'w')
     f.write(request.json["paste_contents"])
     f.close()
 
-    # copy file to cache folder
-    cache_path = "{}/{}.txt".format(app.config['CACHE_FOLDER'], shortlink)
-    shutil.copyfile(paste_path, cache_path)
+    # upload to S3
+    path = "{}.txt".format(shortlink)
+    session = boto3.session.Session()
+    client = session.client('s3', region_name='nyc3', endpoint_url=app.config["SPACES_URL"],
+        aws_access_key_id=app.config["SPACES_KEY"], aws_secret_access_key=app.config["SPACES_SECRET"])
+    client.upload_file(paste_path, 'pastes', path)
 
     # add paste to database
-    path = "{}.txt".format(shortlink)
     paste = Pastes(shortlink=shortlink,
                    expiration_length_in_minutes=request.json['expiration_length_in_minutes'],
                    created_at=datetime.now(),
@@ -91,15 +92,25 @@ def get_paste():
         abort(400)
 
     # update redis cache with hit
-    r = redis.Redis(host=app.config['REDIS_HOST'], port=app.config['REDIS_PORT'])
+    r = redis.StrictRedis(host=app.config['REDIS_HOST'], port=app.config['REDIS_PORT'],
+        db=0, password=app.config['REDIS_PASS'])
     period = datetime.now().strftime("%Y-%m")
     key = "{}-{}".format(period, shortlink)
     r.incrby(key, 1)
     r.close()
 
-    # load paste_contents from file
+    # file destination
     path = paste.paste_path
     cache_path = "{}/{}.txt".format(app.config['CACHE_FOLDER'], shortlink)
+
+    # download file from S3 if it is not at file destination
+    if not os.path.exists(cache_path):
+        session = boto3.session.Session()
+        client = session.client('s3', region_name='nyc3', endpoint_url=app.config["SPACES_URL"],
+            aws_access_key_id=app.config["SPACES_KEY"], aws_secret_access_key=app.config["SPACES_SECRET"])
+        client.download_file('pastes', path, cache_path)
+
+    # load paste_contents from cache
     f = open(cache_path, 'r')
     paste_contents = f.read()
     f.close()
@@ -122,7 +133,8 @@ def get_hits():
     key = "{}-{}".format(period, shortlink)
     
     # read hits from redis cache
-    r = redis.Redis(host=app.config['REDIS_HOST'], port=app.config['REDIS_PORT'])
+    r = redis.StrictRedis(host=app.config['REDIS_HOST'], port=app.config['REDIS_PORT'],
+        db = 0, password=app.config['REDIS_PASS'])
     value = r.get(key)
     r.close()
 

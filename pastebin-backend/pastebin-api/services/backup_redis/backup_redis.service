@@ -1,0 +1,10 @@
+[Unit]
+Description=service to backup redis.
+
+[Service]
+Type=simple
+User=root
+ExecStart=/usr/bin/python3.6 /root/sd-pastebin/pastebin-backend/pastebin-api/services/backup_redis/backup_redis.py
+
+[Install]
+WantedBy=multi-user.target

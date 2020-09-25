@@ -14,14 +14,8 @@ COPY pastebin-api.py ./
 COPY boot.sh ./
 
 RUN chmod +x boot.sh
-#RUN mkdir -p /pastes
-#RUN mkdir -p /cache
-#RUN mkdir -p /logs
 
 ENV FLASK_APP pastebin-api.py
-
-#RUN chown -R pastebin-api:pastebin-api ./
-#USER pastebin-api
 
 EXPOSE 5000
 ENTRYPOINT ["./boot.sh"]
