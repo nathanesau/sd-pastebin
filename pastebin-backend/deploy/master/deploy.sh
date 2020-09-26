@@ -1,22 +1,29 @@
 #!/bin/bash
 
+build_postgres=false
+build_redis=false
+
 #######################################################
 ## IMPORTANT: set environment variables before running
 #######################################################
 
 # create directories
-mkdir -f /root/dumps
-mkdir -f /root/cache
+mkdir -p /root/dumps
+mkdir -p /root/cache
 
 # build latest image of postgres
-cd ../../database
-docker build -t pastebin-postgres:latest .
-cd ../deploy/master
+if [ "$build_postgres" = true ] ; then
+    cd ../../database
+    docker build -t pastebin-postgres:latest .
+    cd ../deploy/master
+fi
 
 # build latest image of redis
-cd ../../cache
-docker build -t pastebin-redis:latest .
-cd ../deploy/master
+if [ "$build_redis" = true ] ; then
+    cd ../../cache
+    docker build -t pastebin-redis:latest .
+    cd ../deploy/master
+fi
 
 # build latest image of api
 cd ../../pastebin-api
