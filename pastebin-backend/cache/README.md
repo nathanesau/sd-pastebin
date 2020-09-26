@@ -10,17 +10,17 @@ to connect to image with python:
 
 ```python
 import redis
-r = redis.StrictRedis(host="134.122.41.28", port=6379, db=0, password='redispass')
+r = redis.StrictRedis(host="134.122.41.28", port=6379, db=0, password='yourpass')
 ```
 
 to connect to redis-cli inside docker image:
 
 ```bash
 # make a data dump
-docker exec -it pastebin-redis redis-cli -a redispass --rdb /data/dump.rdb
+docker exec -it pastebin-redis redis-cli -a yourpass --rdb /data/dump.rdb
 
 # view keys
 docker exec -it pastebin-redis /bin/bash
-redis-cli -a redispass 
+redis-cli -a yourpass 
 KEYS *
 ```

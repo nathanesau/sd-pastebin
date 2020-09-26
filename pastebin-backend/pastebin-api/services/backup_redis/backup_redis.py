@@ -14,7 +14,8 @@ from logging.handlers import RotatingFileHandler
 def backup_redis_task():
     logger.info("running backup redis task at {}".format(datetime.now()))
 
-    ret_code = os.system("docker exec pastebin-redis redis-cli -a redispass --rdb /data/dump.rdb")
+    ret_code = os.system("docker exec pastebin-redis redis-cli -a {} --rdb /data/dump.rdb".format(
+        os.environ['REDIS_PASS']))
     if ret_code == 0:
         logger.info("backup successful")
     else:
