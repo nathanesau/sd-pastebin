@@ -1,6 +1,5 @@
 # simple linux service to backup redis cache
 
-import boto3
 from datetime import datetime
 import os
 import glob

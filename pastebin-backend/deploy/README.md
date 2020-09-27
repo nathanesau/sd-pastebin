@@ -2,7 +2,7 @@
 
 ## environment variables
 
-environment variables should be set manually in environment (for security reasons). This can be done in ``~/.bashrc``. Following variables should be set:
+environment variables should be set manually in server (for security reasons). This can be done in ``~/.bashrc``. Following variables should be set:
 
 ```bash
 POSTGRES_PASS=yourpass

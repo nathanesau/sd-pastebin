@@ -2,6 +2,7 @@
 
 build_postgres=false
 build_redis=false
+deploy_service=false
 
 #######################################################
 ## IMPORTANT: set environment variables before running
@@ -40,8 +41,11 @@ docker-compose -f docker-compose.yml up -d
 cd ../../pastebin-api/
 
 # backup_redis
-cp services/backup_redis/backup_redis.service /lib/systemd/system/
-cp /lib/systemd/system/backup_redis.service /etc/systemd/backup_redis.service
-chmod 644 /lib/systemd/system/backup_redis.service
-systemctl enable backup_redis
-systemctl start backup_redis
+if [ "$deploy_service" = true ] ; then
+    # REDIS_PASS in service file should be manually edited
+    cp services/backup_redis/backup_redis.service /lib/systemd/system/
+    cp /lib/systemd/system/backup_redis.service /etc/systemd/backup_redis.service
+    chmod 644 /lib/systemd/system/backup_redis.service
+    systemctl enable backup_redis
+    systemctl start backup_redis
+fi
